@@ -1,6 +1,5 @@
 import status.Status;
 import templateTask.Epic;
-import templateTask.Subtask;
 import templateTask.Task;
 
 import java.util.HashMap;
@@ -9,20 +8,15 @@ public class ManageTask {
     private HashMap<Integer, Task> dataTask = new HashMap<>();
     private HashMap<Integer, Epic> dataEpic = new HashMap<>();
 
-    private Integer idTask = 0;
-    private Integer idEpic = 0;
-
     public Task createTask(String nameTask, String description){
-        idTask +=1;
-        Task task = new Task(nameTask, description, idTask, Status.NEW.getCode());
-        dataTask.put(idTask, task);
+        Task task = new Task(nameTask, description, Status.NEW.getCode());
+        dataTask.put(task.getId(), task);
         return task;
     }
 
     public Epic createEpic(String nameEpic, String description){
-        idEpic +=1;
-        Epic epic = new Epic(nameEpic, description, idEpic, Status.NEW.getCode());
-        dataEpic.put(idEpic, epic);
+        Epic epic = new Epic(nameEpic, description, Status.NEW.getCode());
+        dataEpic.put(epic.getId(), epic);
         return epic;
     }
 
@@ -36,6 +30,10 @@ public class ManageTask {
         Epic epic = dataEpic.get(idEpic);
         epic.createSubtask(task);
         deleteTask(task.getId());
+    }
+
+    public void updateTask(Task task){
+        dataTask.put(task.getId(), task);
     }
 
     public void updateNameTask(Integer idTask, String nameTask){
@@ -67,7 +65,7 @@ public class ManageTask {
     }
 
     public void deleteEpic(Integer idEpic){
-        dataEpic.remove(idTask);
+        dataEpic.remove(idEpic);
     }
 
     public void deleteAllEpic(){

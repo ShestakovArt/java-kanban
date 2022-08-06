@@ -1,49 +1,22 @@
 package templateTask;
 
-public class Task {
-    private String nameTask;
-    private String description;
+public class Task extends BaseTask{
     private int id;
-    private String statusTask;
+    private static int counter;
 
-    public Task(){
+    static {
+        counter = 1;
     }
 
-    public Task(String nameTask, String description, int id, String statusTask) {
-        this.nameTask = nameTask;
-        this.description = description;
-        this.id = id;
-        this.statusTask = statusTask;
-    }
-
-    public String getNameTask() {
-        return nameTask;
-    }
-
-    public void setNameTask(String nameTask) {
-        this.nameTask = nameTask;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public Task(String nameTask, String description, String statusTask) {
+        super(nameTask, description, statusTask);
+        this.id = counter++;
     }
 
     public int getId() {
         return id;
     }
 
-
-    public String getStatusTask() {
-        return statusTask;
-    }
-
-    public void setStatusTask(String statusTask) {
-        this.statusTask = statusTask;
-    }
 
     @Override
     public String toString() {

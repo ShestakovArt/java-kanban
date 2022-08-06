@@ -21,6 +21,6 @@ public class Main {
         manage.addSubtaskEpic(2, manage.getDataTask().get(1));
         manage.updateNameTask(2, "Был апдейт имени задачи 2");
         System.out.println(manage.getDataTask());
-        System.out.println(manage.getDataEpic().get(2));
+        System.out.println(manage.getDataEpic());
     }
 }

@@ -1,28 +1,31 @@
 package templateTask;
 
 import status.Status;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Epic extends Task{
+public class Epic extends BaseTask{
     private HashMap<Integer, Task> dataSubtask = new HashMap<>();
-    private Integer idSubtask = 0;
+    private int id;
+    private static int counter;
 
-    public Epic(String nameTask, String description, int id, String statusTask) {
-        super(nameTask, description, id, statusTask);
+    static {
+        counter = 1;
     }
 
+    public Epic(String nameTask, String description, String statusTask) {
+        super(nameTask, description, statusTask);
+        id = counter++;
+    }
+
+
     public Task createSubtask(String nameSubtask, String description){
-        idSubtask +=1;
-        Task subtask = new Subtask(nameSubtask, description, idSubtask, Status.NEW.getCode());
-        dataSubtask.put(idSubtask, subtask);
+        Task subtask = new Subtask(nameSubtask, description, Status.NEW.getCode(), getId());
+        dataSubtask.put(subtask.getId(), subtask);
         return subtask;
     }
     public Task createSubtask(Task task){
-        idSubtask +=1;
-        Task subtask = new Task(task.getNameTask(), task.getDescription(), idSubtask, Status.NEW.getCode());
-        dataSubtask.put(idSubtask, subtask);
+        Task subtask = new Subtask(task.getNameTask(), task.getDescription(), Status.NEW.getCode(), getId());
+        dataSubtask.put(subtask.getId(), subtask);
         return subtask;
     }
 
@@ -34,12 +37,20 @@ public class Epic extends Task{
         dataSubtask.get(idSubtask).setDescription(description);
     }
 
+    public HashMap<Integer, Task> getDataSubtask() {
+        return dataSubtask;
+    }
+
+    public int getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         return "Эпик{" +
                 "Имя эпика='" + super.getNameTask() + '\'' +
                 ", Описание='" + super.getDescription() + '\'' +
-                ", ID=" + super.getId() +
+                ", ID=" + getId() +
                 ", Статус='" + super.getStatusTask() + '\'' +
                 ", Подзадачи " + dataSubtask +
                 '}';
