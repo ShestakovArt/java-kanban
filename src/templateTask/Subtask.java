@@ -1,6 +1,6 @@
 package templateTask;
 
-public class Subtask extends Task{
+public class Subtask extends BaseTask{
     int idEpic;
     private int id;
     private static int counter;
@@ -9,14 +9,25 @@ public class Subtask extends Task{
         counter = 1;
     }
 
-    public Subtask(String nameTask, String description, String statusTask, int idEpic) {
-        super(nameTask, description, statusTask);
+    protected Subtask(String nameTask, String description) {
+        super(nameTask, description);
         id = counter++;
+    }
+
+    protected int getIdEpic() {
+        return idEpic;
+    }
+
+    protected void setIdEpic(int idEpic) {
         this.idEpic = idEpic;
     }
 
-    public int getId() {
+    protected int getId() {
         return id;
+    }
+
+    private void setId(int id) {
+        this.id = id;
     }
 
     @Override

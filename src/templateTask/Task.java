@@ -8,8 +8,8 @@ public class Task extends BaseTask{
         counter = 1;
     }
 
-    public Task(String nameTask, String description, String statusTask) {
-        super(nameTask, description, statusTask);
+    public Task(String nameTask, String description) {
+        super(nameTask, description);
         this.id = counter++;
     }
 
@@ -17,6 +17,9 @@ public class Task extends BaseTask{
         return id;
     }
 
+    private void setId(int id) {
+        this.id = id;
+    }
 
     @Override
     public String toString() {

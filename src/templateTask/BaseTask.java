@@ -1,14 +1,16 @@
 package templateTask;
+import status.Status;
+
 
 public abstract class BaseTask {
     protected String nameTask;
     protected String description;
     protected String statusTask;
 
-    public BaseTask(String nameTask, String description, String statusTask) {
+    public BaseTask(String nameTask, String description) {
         this.nameTask = nameTask;
         this.description = description;
-        this.statusTask = statusTask;
+        setStatusTask(Status.NEW.getCode());
     }
 
     public String getNameTask() {
