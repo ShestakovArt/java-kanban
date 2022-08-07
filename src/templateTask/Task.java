@@ -1,6 +1,9 @@
 package templateTask;
 
+import status.Status;
+
 public class Task extends BaseTask{
+    private String status;
     private int id;
     private static int counter;
 
@@ -10,7 +13,16 @@ public class Task extends BaseTask{
 
     public Task(String nameTask, String description) {
         super(nameTask, description);
+        this.status = Status.NEW.getCode();
         this.id = counter++;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public int getId() {
@@ -27,7 +39,7 @@ public class Task extends BaseTask{
                 "Имя задачи='" + nameTask + '\'' +
                 ", Описание='" + description + '\'' +
                 ", ID=" + id +
-                ", Статус='" + statusTask + '\'' +
+                ", Статус='" + getStatus() + '\'' +
                 '}';
     }
 }

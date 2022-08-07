@@ -1,17 +1,24 @@
 package templateTask;
 
+import status.Status;
+
 public class Subtask extends BaseTask{
+    private String status;
     int idEpic;
     private int id;
-    private static int counter;
 
-    static {
-        counter = 1;
+    protected Subtask(String nameTask, String description, int id) {
+        super(nameTask, description);
+        this.id = id;
+        this.status = Status.NEW.getCode();
     }
 
-    protected Subtask(String nameTask, String description) {
-        super(nameTask, description);
-        id = counter++;
+    protected String getStatus() {
+        return status;
+    }
+
+    protected void setStatus(String status) {
+        this.status = status;
     }
 
     protected int getIdEpic() {
@@ -36,7 +43,7 @@ public class Subtask extends BaseTask{
                 "Имя задачи='" + super.getNameTask() + '\'' +
                 ", Описание='" + super.getDescription() + '\'' +
                 ", ID=" + getId() +
-                ", Статус='" + super.getStatusTask() + '\'' +
+                ", Статус='" + getStatus() + '\'' +
                 ", номер Эпика= " + idEpic +
                 '}';
     }

@@ -7,8 +7,10 @@ import java.util.Set;
 
 public class Epic extends BaseTask{
     private HashMap<Integer, Subtask> dataSubtask = new HashMap<>();
+    private String status;
     private int id;
     private static int counter;
+    private int idSubtask = 0;
 
     static {
         counter = 1;
@@ -16,8 +18,8 @@ public class Epic extends BaseTask{
 
     public Epic(String nameTask, String description) {
         super(nameTask, description);
+        this.status = Status.NEW.getCode();
         id = counter++;
-        cheskAndSetStatus();
     }
 
     /**
@@ -29,25 +31,25 @@ public class Epic extends BaseTask{
             int countDone = 0;
             Set<Integer> keys = dataSubtask.keySet();
             for(Integer key : keys){
-                if (dataSubtask.get(key).getStatusTask().equals(Status.NEW.getCode())) {
+                if (dataSubtask.get(key).getStatus().equals(Status.NEW.getCode())) {
                     countNew++;
                 }
-                if (Objects.equals(dataSubtask.get(key).getStatusTask(), Status.DONE.getCode())) {
+                if (Objects.equals(dataSubtask.get(key).getStatus(), Status.DONE.getCode())) {
                     countDone++;
                 }
             }
             if(countNew == dataSubtask.size()) {
-                setStatusTask(Status.NEW.getCode());
+                setStatus(Status.NEW.getCode());
             }
             else if(countDone == dataSubtask.size()) {
-                setStatusTask(Status.DONE.getCode());
+                setStatus(Status.DONE.getCode());
             }
             else{
-                setStatusTask(Status.IN_PROGRESS.getCode());
+                setStatus(Status.IN_PROGRESS.getCode());
             }
         }
         else{
-            setStatusTask(Status.NEW.getCode());
+            setStatus(Status.NEW.getCode());
         }
     }
 
@@ -57,7 +59,8 @@ public class Epic extends BaseTask{
      * @param description
      */
     public void createSubtask(String nameTask, String description){
-        Subtask subtask = new Subtask(nameTask, description);
+        idSubtask++;
+        Subtask subtask = new Subtask(nameTask, description, idSubtask);
         dataSubtask.put(subtask.getId(), subtask);
         subtask.setIdEpic(getId());
         cheskAndSetStatus();
@@ -87,7 +90,7 @@ public class Epic extends BaseTask{
      * @param status статус
      */
     public void updateStatusSubtask(Integer idSubtask, String status){
-        dataSubtask.get(idSubtask).setStatusTask(status);
+        dataSubtask.get(idSubtask).setStatus(status);
         cheskAndSetStatus();
     }
 
@@ -116,6 +119,14 @@ public class Epic extends BaseTask{
         cheskAndSetStatus();
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    private void setStatus(String status) {
+        this.status = status;
+    }
+
     public int getId() {
         return id;
     }
@@ -126,7 +137,7 @@ public class Epic extends BaseTask{
                 "Имя эпика='" + super.getNameTask() + '\'' +
                 ", Описание='" + super.getDescription() + '\'' +
                 ", ID=" + getId() +
-                ", Статус='" + super.getStatusTask() + '\'' +
+                ", Статус='" + getStatus() + '\'' +
                 ", Количество подзадач=" + dataSubtask.size() +
                 '}';
     }
