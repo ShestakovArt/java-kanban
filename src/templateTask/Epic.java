@@ -67,6 +67,15 @@ public class Epic extends BaseTask{
     }
 
     /**
+     * Получение подзадачи по ID
+     * @param id ID подзадачи
+     * @return подзадача
+     */
+    public Subtask getSubtask(Integer id){
+        return getDataSubtask().get(id);
+    }
+
+    /**
      * Метод для изменения имени подзадачи
      * @param idSubtask ID подзадачи
      * @param name имя
