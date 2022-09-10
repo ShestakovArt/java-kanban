@@ -1,12 +1,12 @@
 package managerUtil;
 
-import templateTask.BaseTask;
 import templateTask.Epic;
 import templateTask.Subtask;
 import templateTask.Task;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static managerUtil.Managers.getDefaultHistory;
 
@@ -55,30 +55,44 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTask(Integer idTask){
         dataTask.remove(idTask);
+        getDefaultHistory().remove(idTask);
     }
 
     @Override
     public void deleteAllTask(){
+        for (Map.Entry<Integer, Task> entry : dataTask.entrySet()) {
+            getDefaultHistory().remove(entry.getKey());
+        }
         dataTask.clear();
     }
 
     @Override
     public void deleteEpic(Integer idEpic){
+        deleteAllSubtask(idEpic);
         dataEpic.remove(idEpic);
+        getDefaultHistory().remove(idEpic);
     }
 
     @Override
     public void deleteAllEpic(){
+        for (Map.Entry<Integer, Epic> entry : dataEpic.entrySet()) {
+            deleteEpic(entry.getKey());
+            getDefaultHistory().remove(entry.getKey());
+        }
         dataEpic.clear();
     }
 
     @Override
     public void deleteSubtask(Integer idEpic, Integer idSubtask){
         dataEpic.get(idEpic).deleteSubtask(idSubtask);
+        getDefaultHistory().remove(idSubtask);
     }
 
     @Override
     public void deleteAllSubtask(Integer idEpic){
+        for (Map.Entry<Integer, Subtask> entry : dataEpic.get(idEpic).getDataSubtask().entrySet()) {
+            getDefaultHistory().remove(entry.getKey());
+        }
         dataEpic.get(idEpic).deleteAllSubtask();
     }
 
@@ -99,11 +113,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addSubtaskForEpic(Integer idEpic, String nameTask, String description){
-        dataEpic.get(idEpic).createSubtask(nameTask, description);
+        dataEpic.get(idEpic).addSubTask(nameTask, description);
     }
 
     @Override
-    public List<BaseTask> getHistory(){
+    public List<Task> getHistory(){
         return  getDefaultHistory().getHistory();
     }
 }

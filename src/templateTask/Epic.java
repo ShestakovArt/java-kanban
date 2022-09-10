@@ -1,25 +1,15 @@
 package templateTask;
 
 import status.Status;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.Set;
 
-public class Epic extends BaseTask{
+import java.util.*;
+
+public class Epic extends Task{
     private HashMap<Integer, Subtask> dataSubtask = new HashMap<>();
     private String status;
-    private int id;
-    private static int counter;
-    private int idSubtask = 0;
-
-    static {
-        counter = 1;
-    }
 
     public Epic(String nameTask, String description) {
         super(nameTask, description);
-        this.status = Status.NEW.getCode();
-        id = counter++;
     }
 
     /**
@@ -29,12 +19,11 @@ public class Epic extends BaseTask{
         if(dataSubtask.size() > 0){
             int countNew = 0;
             int countDone = 0;
-            Set<Integer> keys = dataSubtask.keySet();
-            for(Integer key : keys){
-                if (dataSubtask.get(key).getStatus().equals(Status.NEW.getCode())) {
+            for(Map.Entry<Integer, Subtask> subtask : dataSubtask.entrySet()){
+                if (subtask.getValue().getStatus().equals(Status.NEW.getCode())) {
                     countNew++;
                 }
-                if (Objects.equals(dataSubtask.get(key).getStatus(), Status.DONE.getCode())) {
+                if (Objects.equals(subtask.getValue().getStatus(), Status.DONE.getCode())) {
                     countDone++;
                 }
             }
@@ -54,16 +43,29 @@ public class Epic extends BaseTask{
     }
 
     /**
-     * Метод для создания подзадачи в эпике
-     * @param nameTask
-     * @param description
+     * Метод для добавления подзадачи в эпик
+     * @param nameTask название подзадачи
+     * @param description описание подзадачи
+     * @return подзадача с названием, описанием и ID эпика в котором находится
      */
-    public void createSubtask(String nameTask, String description){
-        idSubtask++;
-        Subtask subtask = new Subtask(nameTask, description, idSubtask);
+    public Subtask addSubTask(String nameTask, String description){
+        Subtask subtask = new Subtask(nameTask, description);
         dataSubtask.put(subtask.getId(), subtask);
         subtask.setIdEpic(getId());
         cheskAndSetStatus();
+        return subtask;
+    }
+
+    /**
+     * Метод для добавления подзадачи в эпик
+     * @param subtask подзадача(содержит название и описание)
+     * @return подзадача с ID эпика в котором находится
+     */
+    public Subtask addSubTask(Subtask subtask){
+        subtask.setIdEpic(getId());
+        dataSubtask.put(subtask.getId(), subtask);
+        cheskAndSetStatus();
+        return subtask;
     }
 
     /**
@@ -98,7 +100,7 @@ public class Epic extends BaseTask{
      * @param idSubtask ID подзадачи
      * @param status статус
      */
-    public void updateStatusSubtask(Integer idSubtask, String status){
+    public void updateStatusSubtask(int idSubtask, String status){
         dataSubtask.get(idSubtask).setStatus(status);
         cheskAndSetStatus();
     }
@@ -126,18 +128,6 @@ public class Epic extends BaseTask{
     public void deleteAllSubtask(){
         dataSubtask.clear();
         cheskAndSetStatus();
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    private void setStatus(String status) {
-        this.status = status;
-    }
-
-    public int getId() {
-        return id;
     }
 
     @Override

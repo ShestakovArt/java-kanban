@@ -1,40 +1,26 @@
 package templateTask;
 
-import status.Status;
-
-public class Subtask extends BaseTask{
-    private String status;
+public class Subtask extends Task{
     int idEpic;
-    private int id;
 
-    protected Subtask(String nameTask, String description, int id) {
+    public Subtask(String nameTask, String description) {
         super(nameTask, description);
-        this.id = id;
-        this.status = Status.NEW.getCode();
     }
 
-    protected String getStatus() {
-        return status;
-    }
-
-    protected void setStatus(String status) {
-        this.status = status;
-    }
-
-    protected int getIdEpic() {
+    /**
+     * Получить ID эпика к которой относится подзадача
+     * @return ID эпика
+     */
+    public int getIdEpic() {
         return idEpic;
     }
 
-    protected void setIdEpic(int idEpic) {
+    /**
+     * Установить ID эпика для подзадачи
+     * @param idEpic ID эпика
+     */
+    public void setIdEpic(int idEpic) {
         this.idEpic = idEpic;
-    }
-
-    protected int getId() {
-        return id;
-    }
-
-    private void setId(int id) {
-        this.id = id;
     }
 
     @Override
@@ -44,7 +30,7 @@ public class Subtask extends BaseTask{
                 ", Описание='" + super.getDescription() + '\'' +
                 ", ID=" + getId() +
                 ", Статус='" + getStatus() + '\'' +
-                ", номер Эпика= " + idEpic +
+                ", ID Эпика= " + idEpic +
                 '}';
     }
 }

@@ -1,6 +1,5 @@
 package managerUtil;
 
-import templateTask.BaseTask;
 import templateTask.Epic;
 import templateTask.Subtask;
 import templateTask.Task;
@@ -115,5 +114,5 @@ public interface TaskManager {
      * Метод для просмотра истории просмотров задач
      * @return
      */
-    public List<BaseTask> getHistory();
+    public List<Task> getHistory();
 }

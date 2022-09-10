@@ -1,10 +1,11 @@
-import managerUtil.HistoryManager;
 import managerUtil.Managers;
 import managerUtil.TaskManager;
-import status.Status;
-import templateTask.BaseTask;
 import templateTask.Epic;
+import templateTask.Subtask;
 import templateTask.Task;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class Main {
 
@@ -16,79 +17,85 @@ public class Main {
         Task taskTwo = new Task("Задача 2", "Описание з2");
         Epic epicOne = new Epic("Эпик 1", "Описание эп1");
         Epic epicTwo = new Epic("Эпик 2", "Описание эп2");
-        epicOne.createSubtask("Подзадача 1 эп 1","Описание п1 эп1");
-        epicOne.createSubtask("Подзадача 2 эп 1","Описание п2 эп1");
-        epicTwo.createSubtask("Подзадача 1 эп 2","Описание п1 эп2");
 
         manager.addTask(taskOne);
         manager.addTask(taskTwo);
         manager.addEpic(epicOne);
+        Subtask subTaskOneEOne = epicOne.addSubTask(new Subtask("Подзадача 1 эп 1","Описание п1 эп1"));
+        Subtask subTaskTwoEOne = epicOne.addSubTask(new Subtask("Подзадача 2 эп 1","Описание п2 эп1"));
+        Subtask subTaskThreeEOne = epicOne.addSubTask(new Subtask("Подзадача 3 эп 1","Описание п3 эп1"));
         manager.addEpic(epicTwo);
-        manager.getEpic(1);
-        manager.getEpic(2);
-        manager.getTask(1);
-        manager.getTask(2);
         System.out.println("\n-----Созданные объекты-----\n");
         System.out.println(manager.getDataEpic());
         System.out.println(manager.getDataTask());
-        System.out.println(manager.getSubtaskEpic(1));
-        System.out.println(manager.getSubtaskEpic(2));
+        System.out.println(manager.getSubtaskEpic(epicOne.getId()));
 
-        System.out.println("\n-----История просмотров созданных объектов-----\n");
-        for (BaseTask task : manager.getHistory()){
-            System.out.println(task);
-        }
-        System.out.println("\n-----Количество объектов в истории просмотров-----\n");
-        System.out.println(manager.getHistory().size());
+        manager.getEpic(epicOne.getId());
+        viewHistory(manager);
 
-        taskOne.setStatus(Status.IN_PROGRESS.getCode());
-        taskTwo.setStatus(Status.DONE.getCode());
-        epicOne.updateStatusSubtask(1, Status.IN_PROGRESS.getCode());
-        epicOne.updateStatusSubtask(2, Status.DONE.getCode());
-        epicTwo.updateStatusSubtask(1, Status.DONE.getCode());
-        System.out.println("\n-----Изменили статусы у задач и подзадач-----\n");
-        System.out.println(manager.getDataEpic());
-        System.out.println(manager.getDataTask());
-        System.out.println(manager.getSubtaskEpic(1));
-        System.out.println(manager.getSubtaskEpic(2));
+        manager.getSubtask(epicOne.getId(), subTaskOneEOne.getId());
+        viewHistory(manager);
+
+        manager.getEpic(epicTwo.getId());
+        viewHistory(manager);
+
+        manager.getTask(taskOne.getId());
+        viewHistory(manager);
+
+        manager.getEpic(epicTwo.getId());
+        viewHistory(manager);
+
+        manager.getSubtask(epicOne.getId(), subTaskTwoEOne.getId());
+        viewHistory(manager);
+
+        manager.getTask(taskTwo.getId());
+        viewHistory(manager);
+
+        manager.getTask(taskTwo.getId());
+        viewHistory(manager);
+
+        manager.getSubtask(epicOne.getId(), subTaskThreeEOne.getId());
+        viewHistory(manager);
+
+        manager.getSubtask(epicOne.getId(), subTaskTwoEOne.getId());
+        viewHistory(manager);
+
+        manager.getEpic(epicOne.getId());
+        viewHistory(manager);
+
         System.out.println();
+        System.out.println("\n-----Действие-----");
+        System.out.printf("Удалим: %s%n", manager.getTask(taskTwo.getId()));
+        manager.deleteTask(taskTwo.getId());
+        viewHistory(manager);
 
-        manager.getEpic(1);
-        manager.getTask(1);
-        manager.getTask(1);
-        manager.getSubtask(1, 2);
-        manager.getTask(2);
-        manager.getSubtask(2, 1);
-        manager.getEpic(1);
-        manager.getTask(1);
-        manager.getTask(1);
-        manager.getSubtask(1, 2);
-        manager.getTask(2);
-        manager.getSubtask(2, 1);
-
-        System.out.println("\n-----История просмотров задач-----\n");
-        for (BaseTask task : manager.getHistory()){
-            System.out.println(task);
-        }
-        System.out.println("\n-----Количество объектов в истории просмотров-----\n");
-        System.out.println(manager.getHistory().size());
-
-
-        manager.getTask(2);
-        manager.deleteTask(2);
-        manager.getEpic(1);
-        manager.deleteEpic(1);
-        System.out.println("\n-----Удалили задачу и эпик-----\n");
-        System.out.println(manager.getDataEpic());
-        System.out.println(manager.getDataTask());
-
-        System.out.println("\n-----История просмотров задач-----\n");
-        for (BaseTask task : manager.getHistory()){
-            System.out.println(task);
-        }
-        System.out.println("\n-----Количество объектов в истории просмотров-----\n");
-        System.out.println(manager.getHistory().size());
+        System.out.println();
+        System.out.println("\n-----Действие-----");
+        System.out.printf("Удалим: %s%n", manager.getEpic(epicOne.getId()));
+        manager.deleteEpic(epicOne.getId());
+        viewHistory(manager);
 
         System.out.println("\n-----Конец теста-----");
+    }
+
+    /**
+     * Вывод истории просмотров
+     * @param manager менеджер для работы с задачами
+     */
+    private static void viewHistory(TaskManager manager) {
+        System.out.println("\n-----История просмотров-----\n");
+        for (Task task : manager.getHistory()){
+            System.out.println(task);
+        }
+        System.out.print("\nКоличество просмотров в истории просмотров ");
+        System.out.print(manager.getHistory().size());
+
+        Set<Task> uniqueTask = new HashSet<>(manager.getHistory());
+        if(uniqueTask.size() == manager.getHistory().size()){
+            System.out.print(" --> В истории просмотров НЕТ повторов\n");
+        }
+        else{
+            System.out.print(" --> В истории просмотров ЕСТЬ повторы\n");
+        }
     }
 }
