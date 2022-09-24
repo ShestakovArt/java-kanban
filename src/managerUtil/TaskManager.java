@@ -13,106 +13,107 @@ public interface TaskManager {
      * Добавить задачу
      * @param task объект Task
      */
-    public void addTask(Task task);
+    void addTask(Task task);
+    void addTask(Epic task);
+    void addTask(Integer idEpic, Subtask subtask);
 
-    /**
-     * Добавить эпик
-     * @param epic объект Epic
-     */
-    public void addEpic(Epic epic);
+//    /**
+//     * Добавить эпик
+//     * @param epic объект Epic
+//     */
+//    void addEpic(Epic epic);
+
+//    /**
+//     * Добавить подзадачу
+//     * @param idEpic id Epic
+//     * @param subtask объект Subtask
+//     */
+//    void addSubTask(Integer idEpic, Subtask subtask);
 
     /**
      * Получение задачи по ID
      * @param id ID задачи
      */
-    public Task getTask(Integer id);
+    Task getTask(Integer id);
 
-    /**
-     * Получение эпика по ID
-     * @param id ID эпика
-     */
-    public Epic getEpic(Integer id);
-
-    /**
-     * Получение подзадачи эпика по ID
-     * @param idEpic ID эпика
-     * @param idSubtask ID подзадачи
-     * @return
-     */
-    public Subtask getSubtask(Integer idEpic, Integer idSubtask);
+//    /**
+//     * Получение эпика по ID
+//     * @param id ID эпика
+//     */
+//    Epic getEpic(Integer id);
+//
+//    /**
+//     * Получение подзадачи эпика по ID
+//     * @param idEpic ID эпика
+//     * @param idSubtask ID подзадачи
+//     * @return
+//     */
+//    Subtask getSubtask(Integer idEpic, Integer idSubtask);
 
     /**
      * Обновление задачи
      * @param task обновленный объект Task
      */
-    public void updateTask(Task task);
+    void updateTask(Task task);
 
     /**
      * Обновление эпика
      * @param epic обновленный объект Epic
      */
-    public void updateEpic(Epic epic);
+    void updateEpic(Epic epic);
 
     /**
      * Метод для удаления конкретной задачи
      * @param idTask ID задачи
      */
-    public void deleteTask(Integer idTask);
+    void deleteTask(Integer idTask);
     /**
      * Метод для удаления всех задач
      */
-    public void deleteAllTask();
+    void deleteAllTask();
 
     /**
      * Метод для удаления конкретного эпика
      * @param idEpic ID эпика
      */
-    public void deleteEpic(Integer idEpic);
+    void deleteEpic(Integer idEpic);
 
     /**
      * Метод для удаления всех эпиков
      */
-    public void deleteAllEpic();
+    void deleteAllEpic();
 
     /**
      * Метод для удаления конкретной подзадачи эпика
      * @param idEpic ID эпика
      * @param idSubtask ID подзадачи
      */
-    public void deleteSubtask(Integer idEpic, Integer idSubtask);
+    void deleteSubtask(Integer idEpic, Integer idSubtask);
 
     /**
      * Метод для удаления всех подзадач эпика
      */
-    public void deleteAllSubtask(Integer idEpic);
+    void deleteAllSubtask(Integer idEpic);
 
     /**
      * Метод для просмотра всех задач
      */
-    public HashMap<Integer, Task> getDataTask();
+    HashMap<Integer, Task> getDataTask();
 
     /**
      * Метод для просмотра всех эпиков
      */
-    public HashMap<Integer, Epic> getDataEpic();
+    HashMap<Integer, Epic> getDataEpic();
 
     /**
      * Метод для получения списка подзадач определенного эпика
      * @param idEpic ID эпика
      */
-    public HashMap<Integer, Subtask> getSubtaskEpic(Integer idEpic);
-
-    /**
-     * Метод для добавления подзадачи для Эпика
-     * @param idEpic ID эпика
-     * @param nameTask имя подзадачи
-     * @param description описание подзадачи
-     */
-    public void addSubtaskForEpic(Integer idEpic, String nameTask, String description);
+    HashMap<Integer, Subtask> getSubtaskEpic(Integer idEpic);
 
     /**
      * Метод для просмотра истории просмотров задач
      * @return
      */
-    public List<Task> getHistory();
+    List<Task> getHistory();
 }

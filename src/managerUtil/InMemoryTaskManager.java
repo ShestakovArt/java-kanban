@@ -8,11 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static managerUtil.Managers.getDefaultHistory;
 
 public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Task> dataTask = new HashMap<>();
     private HashMap<Integer, Epic> dataEpic = new HashMap<>();
+    private static HistoryManager getDefaultHistory(){
+        return new InMemoryHistoryManager();
+    }
 
     @Override
     public void addTask(Task task){
@@ -20,8 +22,16 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void addEpic(Epic epic){;
+    public void addTask(Epic epic){
+        addTask((Task) epic);
         dataEpic.put(epic.getId(), epic);
+    }
+
+    @Override
+    public void addTask(Integer idEpic, Subtask subtask){
+        addTask(subtask);
+        subtask.setIdEpic(idEpic);
+        getDataEpic().get(idEpic).addSubTask(subtask);
     }
 
     @Override
@@ -30,17 +40,17 @@ public class InMemoryTaskManager implements TaskManager {
         return getDataTask().get(id);
     }
 
-    @Override
-    public Epic getEpic(Integer id){
-        getDefaultHistory().add(getDataEpic().get(id));
-        return getDataEpic().get(id);
-    }
-
-    @Override
-    public Subtask getSubtask(Integer idEpic, Integer idSubtask){
-        getDefaultHistory().add(getDataEpic().get(idEpic).getSubtask(idSubtask));
-        return getDataEpic().get(idEpic).getSubtask(idSubtask);
-    }
+//    @Override
+//    public Epic getEpic(Integer id){
+//        getDefaultHistory().add(getDataEpic().get(id));
+//        return getDataEpic().get(id);
+//    }
+//
+//    @Override
+//    public Subtask getSubtask(Integer idEpic, Integer idSubtask){
+//        getDefaultHistory().add(getDataEpic().get(idEpic).getSubtask(idSubtask));
+//        return getDataEpic().get(idEpic).getSubtask(idSubtask);
+//    }
 
     @Override
     public void updateTask(Task task){
@@ -111,10 +121,6 @@ public class InMemoryTaskManager implements TaskManager {
         return dataEpic.get(idEpic).getDataSubtask();
     }
 
-    @Override
-    public void addSubtaskForEpic(Integer idEpic, String nameTask, String description){
-        dataEpic.get(idEpic).addSubTask(nameTask, description);
-    }
 
     @Override
     public List<Task> getHistory(){

@@ -1,10 +1,30 @@
 package templateTask;
 
+import enums.TypeTask;
+
 public class Subtask extends Task{
     int idEpic;
 
     public Subtask(String nameTask, String description) {
         super(nameTask, description);
+        this.typeTask = TypeTask.SUBTASK.getCode();
+    }
+
+    public Subtask(String nameTask, String description, int idEpic) {
+        super(nameTask, description);
+        this.typeTask = TypeTask.SUBTASK.getCode();
+        setIdEpic(idEpic);
+    }
+
+    public Subtask(int id, String nameTask, String description) {
+        super(id, nameTask, description);
+        this.typeTask = TypeTask.SUBTASK.getCode();
+    }
+
+    public Subtask(int id, String nameTask, String description, int idEpic) {
+        super(id, nameTask, description);
+        this.typeTask = TypeTask.SUBTASK.getCode();
+        setIdEpic(idEpic);
     }
 
     /**
@@ -25,12 +45,6 @@ public class Subtask extends Task{
 
     @Override
     public String toString() {
-        return "Подзадача{" +
-                "Имя задачи='" + super.getNameTask() + '\'' +
-                ", Описание='" + super.getDescription() + '\'' +
-                ", ID=" + getId() +
-                ", Статус='" + getStatus() + '\'' +
-                ", ID Эпика= " + idEpic +
-                '}';
+        return String.format("%d,%s,%s,%s,%s,%d", getId(), getTypeTask(),nameTask, getStatus(),description, getIdEpic());
     }
 }

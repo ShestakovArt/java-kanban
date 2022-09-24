@@ -1,15 +1,21 @@
 package templateTask;
 
-import status.Status;
+import enums.Status;
+import enums.TypeTask;
 
 import java.util.*;
 
 public class Epic extends Task{
     private HashMap<Integer, Subtask> dataSubtask = new HashMap<>();
-    private String status;
 
     public Epic(String nameTask, String description) {
         super(nameTask, description);
+        this.typeTask = TypeTask.EPIC.getCode();
+    }
+
+    public Epic(int id, String nameTask, String description) {
+        super(id, nameTask, description);
+        this.typeTask = TypeTask.EPIC.getCode();
     }
 
     /**
@@ -43,17 +49,13 @@ public class Epic extends Task{
     }
 
     /**
-     * Метод для добавления подзадачи в эпик
-     * @param nameTask название подзадачи
-     * @param description описание подзадачи
-     * @return подзадача с названием, описанием и ID эпика в котором находится
+     * Получить статус задачи
+     * @return статус задачи
      */
-    public Subtask addSubTask(String nameTask, String description){
-        Subtask subtask = new Subtask(nameTask, description);
-        dataSubtask.put(subtask.getId(), subtask);
-        subtask.setIdEpic(getId());
+    @Override
+    public String getStatus() {
         cheskAndSetStatus();
-        return subtask;
+        return super.getStatus();
     }
 
     /**
@@ -61,11 +63,9 @@ public class Epic extends Task{
      * @param subtask подзадача(содержит название и описание)
      * @return подзадача с ID эпика в котором находится
      */
-    public Subtask addSubTask(Subtask subtask){
-        subtask.setIdEpic(getId());
+    public void addSubTask(Subtask subtask){
         dataSubtask.put(subtask.getId(), subtask);
         cheskAndSetStatus();
-        return subtask;
     }
 
     /**
@@ -128,16 +128,5 @@ public class Epic extends Task{
     public void deleteAllSubtask(){
         dataSubtask.clear();
         cheskAndSetStatus();
-    }
-
-    @Override
-    public String toString() {
-        return "Эпик{" +
-                "Имя эпика='" + super.getNameTask() + '\'' +
-                ", Описание='" + super.getDescription() + '\'' +
-                ", ID=" + getId() +
-                ", Статус='" + getStatus() + '\'' +
-                ", Количество подзадач=" + dataSubtask.size() +
-                '}';
     }
 }

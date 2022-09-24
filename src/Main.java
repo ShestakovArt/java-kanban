@@ -1,15 +1,17 @@
+import managerUtil.FileBackedTasksManager;
 import managerUtil.Managers;
 import managerUtil.TaskManager;
 import templateTask.Epic;
 import templateTask.Subtask;
 import templateTask.Task;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         System.out.println("Поехали!");
         TaskManager manager = new Managers().getDefault();
@@ -20,47 +22,50 @@ public class Main {
 
         manager.addTask(taskOne);
         manager.addTask(taskTwo);
-        manager.addEpic(epicOne);
-        Subtask subTaskOneEOne = epicOne.addSubTask(new Subtask("Подзадача 1 эп 1","Описание п1 эп1"));
-        Subtask subTaskTwoEOne = epicOne.addSubTask(new Subtask("Подзадача 2 эп 1","Описание п2 эп1"));
-        Subtask subTaskThreeEOne = epicOne.addSubTask(new Subtask("Подзадача 3 эп 1","Описание п3 эп1"));
-        manager.addEpic(epicTwo);
+        manager.addTask(epicOne);
+        Subtask subTaskOneEOne = new Subtask("Подзадача 1 эп 1","Описание п1 эп1");
+        Subtask subTaskTwoEOne = new Subtask("Подзадача 2 эп 1","Описание п2 эп1");
+        Subtask subTaskThreeEOne = new Subtask("Подзадача 3 эп 1","Описание п3 эп1");
+        manager.addTask(epicOne.getId(), subTaskOneEOne);
+        manager.addTask(epicOne.getId(), subTaskTwoEOne);
+        manager.addTask(epicOne.getId(), subTaskThreeEOne);
+        manager.addTask(epicTwo);
         System.out.println("\n-----Созданные объекты-----\n");
         System.out.println(manager.getDataEpic());
         System.out.println(manager.getDataTask());
         System.out.println(manager.getSubtaskEpic(epicOne.getId()));
 
-        manager.getEpic(epicOne.getId());
+        manager.getTask(epicOne.getId());
         viewHistory(manager);
 
-        manager.getSubtask(epicOne.getId(), subTaskOneEOne.getId());
+        manager.getTask(subTaskOneEOne.getId());
         viewHistory(manager);
 
-        manager.getEpic(epicTwo.getId());
+        manager.getTask(epicTwo.getId());
         viewHistory(manager);
 
         manager.getTask(taskOne.getId());
         viewHistory(manager);
 
-        manager.getEpic(epicTwo.getId());
+        manager.getTask(epicTwo.getId());
         viewHistory(manager);
 
-        manager.getSubtask(epicOne.getId(), subTaskTwoEOne.getId());
-        viewHistory(manager);
-
-        manager.getTask(taskTwo.getId());
+        manager.getTask(subTaskTwoEOne.getId());
         viewHistory(manager);
 
         manager.getTask(taskTwo.getId());
         viewHistory(manager);
 
-        manager.getSubtask(epicOne.getId(), subTaskThreeEOne.getId());
+        manager.getTask(taskTwo.getId());
         viewHistory(manager);
 
-        manager.getSubtask(epicOne.getId(), subTaskTwoEOne.getId());
+        manager.getTask(subTaskThreeEOne.getId());
         viewHistory(manager);
 
-        manager.getEpic(epicOne.getId());
+        manager.getTask(subTaskTwoEOne.getId());
+        viewHistory(manager);
+
+        manager.getTask(epicOne.getId());
         viewHistory(manager);
 
         System.out.println();
@@ -71,7 +76,7 @@ public class Main {
 
         System.out.println();
         System.out.println("\n-----Действие-----");
-        System.out.printf("Удалим: %s%n", manager.getEpic(epicOne.getId()));
+        System.out.printf("Удалим: %s%n", manager.getTask(epicOne.getId()));
         manager.deleteEpic(epicOne.getId());
         viewHistory(manager);
 

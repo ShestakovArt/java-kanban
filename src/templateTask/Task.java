@@ -1,11 +1,13 @@
 package templateTask;
 
-import status.Status;
+import enums.Status;
+import enums.TypeTask;
 
 public class Task extends BaseTask{
     private String status;
     private Integer id;
     private static int counter;
+    protected String typeTask = TypeTask.TASK.getCode();
 
     static {
         counter = 1;
@@ -15,6 +17,12 @@ public class Task extends BaseTask{
         super(nameTask, description);
         this.status = Status.NEW.getCode();
         this.id = counter++;
+    }
+
+    public Task(int id,String nameTask, String description) {
+        super(nameTask, description);
+        this.status = Status.NEW.getCode();
+        this.id = id;
     }
 
     /**
@@ -49,6 +57,10 @@ public class Task extends BaseTask{
         this.id = id;
     }
 
+    public String getTypeTask(){
+        return typeTask;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -66,11 +78,6 @@ public class Task extends BaseTask{
 
     @Override
     public String toString() {
-        return "Задача{" +
-                "Имя задачи='" + nameTask + '\'' +
-                ", Описание='" + description + '\'' +
-                ", ID=" + id +
-                ", Статус='" + getStatus() + '\'' +
-                '}';
+        return String.format("%d,%s,%s,%s,%s", getId(), getTypeTask(),nameTask, getStatus(),description);
     }
 }
