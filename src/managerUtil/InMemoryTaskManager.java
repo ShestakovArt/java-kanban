@@ -12,7 +12,7 @@ import java.util.Map;
 public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Task> dataTask = new HashMap<>();
     private HashMap<Integer, Epic> dataEpic = new HashMap<>();
-    private static HistoryManager getDefaultHistory(){
+    protected static HistoryManager getDefaultHistory(){
         return new InMemoryHistoryManager();
     }
 

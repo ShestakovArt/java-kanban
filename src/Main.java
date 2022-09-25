@@ -1,17 +1,16 @@
-import managerUtil.FileBackedTasksManager;
 import managerUtil.Managers;
 import managerUtil.TaskManager;
 import templateTask.Epic;
 import templateTask.Subtask;
 import templateTask.Task;
 
-import java.io.IOException;
+
 import java.util.HashSet;
 import java.util.Set;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args){
 
         System.out.println("Поехали!");
         TaskManager manager = new Managers().getDefault();

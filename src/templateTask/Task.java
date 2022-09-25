@@ -25,6 +25,17 @@ public class Task extends BaseTask{
         this.id = id;
     }
 
+    public Task(int id,String nameTask, String description, String status) {
+        super(nameTask, description);
+        Status[] st = Status.values();
+        for (Status s : st) {
+            if(s.getCode().equals(status)){
+                this.status = s.getCode();
+            }
+        }
+        this.id = id;
+    }
+
     /**
      * Получить статус задачи
      * @return статус задачи
@@ -59,6 +70,14 @@ public class Task extends BaseTask{
 
     public String getTypeTask(){
         return typeTask;
+    }
+
+    public static int getCounter() {
+        return counter;
+    }
+
+    public static void setCounter(int counter) {
+        Task.counter = counter;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package templateTask;
 
+import enums.Status;
 import enums.TypeTask;
 
 public class Subtask extends Task{
@@ -23,6 +24,12 @@ public class Subtask extends Task{
 
     public Subtask(int id, String nameTask, String description, int idEpic) {
         super(id, nameTask, description);
+        this.typeTask = TypeTask.SUBTASK.getCode();
+        setIdEpic(idEpic);
+    }
+
+    public Subtask(int id,String nameTask, String description, String status, int idEpic) {
+        super(id, nameTask, description, status);
         this.typeTask = TypeTask.SUBTASK.getCode();
         setIdEpic(idEpic);
     }

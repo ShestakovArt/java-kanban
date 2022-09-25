@@ -18,6 +18,11 @@ public class Epic extends Task{
         this.typeTask = TypeTask.EPIC.getCode();
     }
 
+    public Epic(int id,String nameTask, String description, String status) {
+        super(id, nameTask, description, status);
+        this.typeTask = TypeTask.EPIC.getCode();
+    }
+
     /**
      * Метод устанавливает статус эпика, учитывая имеющиеся подзадачи
      */
