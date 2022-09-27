@@ -106,7 +106,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
             for(Task task : getHistory()){
                 fileWriter.write(String.format("%d,",task.getId()));
             }
-            fileWriter.close();
+            fileWriter.close(); //Добавить в try как ресурс
         }
         catch (IOException e){
             try {
