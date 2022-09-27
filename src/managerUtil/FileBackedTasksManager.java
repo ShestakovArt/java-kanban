@@ -26,17 +26,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
      * @throws IOException
      */
     public FileBackedTasksManager(String path) {
-        try {
-            filePath = path;
-            if (!Files.exists(Path.of(filePath))) {  //Если нет файла, то создаем новый
-                createFile();
-            }
-            else{
-                loadFromFile();  //Загружаем данные из имеющегося файла
-            }
+        filePath = path;
+        if (!Files.exists(Path.of(filePath))) {  //Если нет файла, то создаем новый
+            createFile();
         }
-        catch (NullPointerException e){
-            System.out.println("В путь до файла передано значение null");
+        else{
+            loadFromFile();  //Загружаем данные из имеющегося файла
         }
     }
 
