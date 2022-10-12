@@ -3,11 +3,16 @@ package templateTask;
 import enums.Status;
 import enums.TypeTask;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Task extends BaseTask{
     private String status;
     private Integer id;
     private static int counter;
     protected String typeTask = TypeTask.TASK.getCode();
+    private Duration duration;
+    private LocalDateTime startTime;
 
     static {
         counter = 1;
@@ -78,6 +83,34 @@ public class Task extends BaseTask{
 
     public static void setCounter(int counter) {
         Task.counter = counter;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    /**
+     * Устанавливаем продолжительность задачи, оценка того, сколько времени она займёт в минутах (число)
+     * @param duration
+     */
+    public void setDuration(long duration) {
+        this.duration = Duration.ofMinutes(duration);
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    /**
+     * Получаем дату окончания задачи
+     * @return
+     */
+    public LocalDateTime getEndTime(){
+        return startTime.plusMinutes(duration.toMinutes());
     }
 
     @Override

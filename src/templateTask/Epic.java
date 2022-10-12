@@ -3,10 +3,13 @@ package templateTask;
 import enums.Status;
 import enums.TypeTask;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class Epic extends Task{
     private HashMap<Integer, Subtask> dataSubtask = new HashMap<>();
+    private LocalDateTime endTime;
 
     public Epic(String nameTask, String description) {
         super(nameTask, description);
@@ -51,6 +54,7 @@ public class Epic extends Task{
         else{
             setStatus(Status.NEW.getCode());
         }
+        setDurationForEpic();
     }
 
     /**
@@ -61,6 +65,47 @@ public class Epic extends Task{
     public String getStatus() {
         cheskAndSetStatus();
         return super.getStatus();
+    }
+
+    /**
+     * Устанавливаем продолжительность эпика, оценка того, сколько времени займёт выполнение всех подзадач в минутах (число);
+     *  Время начала — дата старта самой ранней подзадачи, а время завершения — время окончания самой поздней из задач.
+     */
+    private void setDurationForEpic() {
+        Duration duration = Duration.ofMinutes(0);
+        LocalDateTime startTime = null;
+        endTime = null;
+        for (Map.Entry<Integer, Subtask> subtaskEntry : dataSubtask.entrySet()) {
+            duration = duration.plusMinutes(subtaskEntry.getValue().getDuration().toMinutes());
+            if (startTime == null){
+                startTime = subtaskEntry.getValue().getStartTime();
+            }else{
+                if (startTime.isAfter(subtaskEntry.getValue().getStartTime())){
+                    startTime = subtaskEntry.getValue().getStartTime();
+                }
+            }
+
+            if (endTime == null){
+                endTime = subtaskEntry.getValue().getEndTime();
+            }else{
+                if (endTime.isBefore(subtaskEntry.getValue().getEndTime())){
+                    endTime = subtaskEntry.getValue().getEndTime();
+                }
+            }
+        }
+        if (startTime == null){
+            startTime = LocalDateTime.now();
+        }
+        if (endTime == null){
+            endTime = LocalDateTime.now();
+        }
+        setDuration(duration.toMinutes());
+        setStartTime(startTime);
+    }
+
+    @Override
+    public LocalDateTime getEndTime(){
+        return endTime;
     }
 
     /**
