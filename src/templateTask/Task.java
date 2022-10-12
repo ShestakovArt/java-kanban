@@ -11,8 +11,8 @@ public class Task extends BaseTask{
     private Integer id;
     private static int counter;
     protected String typeTask = TypeTask.TASK.getCode();
-    private Duration duration;
-    private LocalDateTime startTime;
+    private Duration duration = Duration.ofMinutes(0);
+    private LocalDateTime startTime = LocalDateTime.now();
 
     static {
         counter = 1;
@@ -91,10 +91,10 @@ public class Task extends BaseTask{
 
     /**
      * Устанавливаем продолжительность задачи, оценка того, сколько времени она займёт в минутах (число)
-     * @param duration
+     * @param minutes
      */
-    public void setDuration(long duration) {
-        this.duration = Duration.ofMinutes(duration);
+    public void setDuration(long minutes) {
+        this.duration = duration.plusMinutes(minutes);
     }
 
     public LocalDateTime getStartTime() {
