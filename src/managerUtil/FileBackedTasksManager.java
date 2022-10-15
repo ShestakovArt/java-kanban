@@ -13,11 +13,14 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 
 public class FileBackedTasksManager extends InMemoryTaskManager{
-    private static String filePath;
+    private static Path filePath;
     private static String dataFile;
 
     /**
@@ -25,9 +28,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
      * @param path путь файла с информацией
      * @throws IOException
      */
-    public FileBackedTasksManager(String path) {
+    public FileBackedTasksManager(Path path) {
         this.filePath = path;
-        if (!Files.exists(Path.of(filePath))) {  //Если нет файла, то создаем новый
+        if (!Files.exists(filePath)) {  //Если нет файла, то создаем новый
             createFile();
         }
         else{
@@ -40,31 +43,55 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
      */
     void loadFromFile(){
         try{
-            dataFile = Files.readString(Path.of(filePath));
+            dataFile = Files.readString(filePath);
             String[] lineDataFile = dataFile.split("\\n");
+            boolean havingHistory = lineDataFile[lineDataFile.length-1].matches("^\\b(\\d*,\\d*)*$");
+            int conditionHistory = lineDataFile.length;
+            if(havingHistory){
+                conditionHistory = lineDataFile.length -2;
+            }
             int maxID = 0;
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyyHHmmss");
             for (int i = 1; i < lineDataFile.length; i++){
-                if (i < (lineDataFile.length -2)){
+                if (i < conditionHistory){
                     String[] task = lineDataFile[i].split(",");
                     if(Integer.parseInt(task[0]) > maxID){
                         maxID = Integer.parseInt(task[0]);
                     }
                     //в зависимости от типа добавляем задачи менеджеру задач
                     if(task[1].equals(TypeTask.TASK.getCode())){
-                        super.addTask(new Task(Integer.parseInt(task[0]), task[2], task[4], task[3]));
+                        Task taskForAddManager = new Task(Integer.parseInt(task[0]), task[2], task[4], task[3]);
+                        if(!task[5].equals("null")){
+                            taskForAddManager.setStartTime(LocalDateTime.parse(task[5], formatter));
+                        }
+                        taskForAddManager.setDuration(Duration.parse(task[6]).toMinutes());
+                        super.addTask(taskForAddManager);
+                        //super.addTask(new Task(Integer.parseInt(task[0]), task[2], task[4], task[3]));
                     }
                     if(task[1].equals(TypeTask.EPIC.getCode())){
-                        super.addTask(new Epic(Integer.parseInt(task[0]), task[2], task[4], task[3]));
+                        Epic epicForAddManager = new Epic(Integer.parseInt(task[0]), task[2], task[4], task[3]);
+                        super.addTask(epicForAddManager);
+                        //super.addTask(new Epic(Integer.parseInt(task[0]), task[2], task[4], task[3]));
                     }
                     if(task[1].equals(TypeTask.SUBTASK.getCode())){
-                        super.addTask(Integer.parseInt(task[5]), new Subtask(Integer.parseInt(task[0]), task[2], task[4], task[3], Integer.parseInt(task[5])));
+                        Subtask subtaskForAddManager = new Subtask(Integer.parseInt(task[0]), task[2], task[4], task[3], Integer.parseInt(task[7]));
+                        if(!task[5].equals("null")){
+                            subtaskForAddManager.setStartTime(LocalDateTime.parse(task[5], formatter));
+                        }
+                        subtaskForAddManager.setDuration(Duration.parse(task[6]).toMinutes());
+                        super.addTask(Integer.parseInt(task[7]), subtaskForAddManager);
+                        //super.addTask(Integer.parseInt(task[7]), new Subtask(Integer.parseInt(task[0]), task[2], task[4], task[3], Integer.parseInt(task[7])));
                     }
                 }
                 //Тк по условию нам известно, что последняя строка содержит данные по истории просмотров,
-                if (i == (lineDataFile.length - 1)){
-                    String[] historyLine = lineDataFile[i].split(",");
-                    for (String idTask : historyLine){
-                        getDefaultHistory().add(getDataTask().get(Integer.parseInt(idTask)));
+                if(havingHistory){
+                    if (i == (lineDataFile.length - 1)){
+                        String[] historyLine = lineDataFile[i].split(",");
+                        if(historyLine.length > 0){
+                            for (String idTask : historyLine){
+                                getDefaultHistory().add(getDataTask().get(Integer.parseInt(idTask)));
+                            }
+                        }
                     }
                 }
             }
@@ -87,10 +114,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
      * Метод для сохранения информации в файл
      */
     void save(){
-        try {
+        try (Writer fileWriter = new FileWriter(filePath.toString(), false)){
             //Запись первой строчки в файл
-            Writer fileWriter = new FileWriter(filePath, false);
-            fileWriter.write("id,type,name,status,description,epicId\n");
+            fileWriter.write("id,type,name,status,description,startTime,duration,epicId\n");
 
             //Построчно записываем данные по задачам
             for(Map.Entry<Integer, Task> entry : getDataTask().entrySet()){
@@ -101,7 +127,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
             for(Task task : getHistory()){
                 fileWriter.write(String.format("%d,",task.getId()));
             }
-            fileWriter.close(); //Добавить в try как ресурс
         }
         catch (IOException e){
             try {
@@ -117,12 +142,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
      */
     void createFile(){
         try{
-            String dirPath = filePath.substring(0, filePath.lastIndexOf("/"));
+            Path path = filePath;
+            String dirPath = path.toString().substring(0, filePath.toString().lastIndexOf("\\"));
             File dir = new File(dirPath);
             while (!dir.isDirectory()){
                 dir.mkdir();
             }
-            Files.createFile(Path.of(filePath));
+            Files.createFile(filePath);
         }
         catch (IOException e){
             System.out.println("Ошибка создания файла");
@@ -132,6 +158,16 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
     @Override
     public void addTask(Task task){
         super.addTask(task);
+        save();
+    }
+
+    public void addTask(Integer epicID, Subtask subtask){
+        super.addTask(epicID, subtask);
+        save();
+    }
+
+    public void addTask(Epic epic){
+        super.addTask(epic);
         save();
     }
 
@@ -145,9 +181,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
      * Метод по заданию для проверки
      * @param args
      */
-    public static void main(String[] args){
-        FileBackedTasksManager fileManager = new FileBackedTasksManager("src/fileRecousre/dataFile.csv");
-        //Для посмотреть на имеющиеся задачи, если текущий файл уже существует
+    public static void main(String[] args) throws InterruptedException {
+        FileBackedTasksManager fileManager = new FileBackedTasksManager(Path.of("src\\fileRecourse\\dataFile.csv"));
+        //Для просмотра на имеющиеся задачи, если текущий файл уже существует
         for (Map.Entry<Integer, Task> task : fileManager.getDataTask().entrySet()){
             System.out.println(task.getValue());
         }
@@ -169,12 +205,27 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
         fileManager.addTask(epicOne.getId(), subTaskTwoEOne);
         fileManager.addTask(epicOne.getId(), subTaskThreeEOne);
         fileManager.addTask(epicTwo);
+        fileManager.getTask(1).setStartTime(LocalDateTime.now());
+        fileManager.getTask(1).setDuration(30);
+        fileManager.setStartTimeForTack(fileManager.getTask(6), LocalDateTime.of(2222, 10, 22, 22, 22), 300);
+        fileManager.setStartTimeForTack(fileManager.getTask(5), LocalDateTime.of(2222, 10, 22, 22, 22), 30);
+//        fileManager.getTask(6).setStartTime(LocalDateTime.of(2222, 10, 22, 22, 22));
+//        fileManager.getTask(6).setDuration(300);
+//        fileManager.getTask(5).setStartTime(LocalDateTime.of(2222, 10, 22, 22, 22));
+//        fileManager.getTask(5).setDuration(30);
+//        fileManager.getTask(5);
+//        System.out.println(fileManager.getTask(1).getDuration());
+//        System.out.println(fileManager.getTask(1).getStartTime());
+//        System.out.println(fileManager.getTask(1).getEndTime());
+        fileManager.addTask(epicTwo.getId(), new Subtask("Подзадача 4 эп 2","Описание п4 эп2"));
+        System.out.println(fileManager.getTask(epicTwo.getId()).getEndTime());
         fileManager.getTask(1).setStatus(Status.DONE.getCode());
         fileManager.getTask(6).setStatus(Status.IN_PROGRESS.getCode());
         System.out.println("\n-----Созданные объекты-----\n");
         for (Map.Entry<Integer, Task> task : fileManager.getDataTask().entrySet()){
             System.out.println(task.getValue());
         }
+        System.out.println(fileManager.getPrioritizedTasks());
 
         fileManager.getTask(epicOne.getId());
         viewHistory(fileManager);
@@ -193,17 +244,19 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
 
         System.out.println();
 
-        FileBackedTasksManager fileManagerTwo = new FileBackedTasksManager("src/fileRecousre/dataFile.csv");
-        //Для посмотреть на имеющиеся задачи, если текущий файл уже существует
+        FileBackedTasksManager fileManagerTwo = new FileBackedTasksManager(Path.of("src\\fileRecourse\\dataFile.csv"));
+        //Для просмотра имеющихся задач, если текущий файл уже существует
         for (Map.Entry<Integer, Task> task : fileManagerTwo.getDataTask().entrySet()){
             System.out.println(task.getValue());
         }
 
         //Визуально смотрим на данные по задачам 2х менеджеров, для сравнения
+        System.out.println("\nВизуально смотрим на данные по задачам 2х менеджеров, для сравнения");
         System.out.println(fileManager.getDataTask());
         System.out.println(fileManagerTwo.getDataTask());
 
         //Сверяем историю просмотров
+        System.out.println("\nСверяем историю просмотров");
         viewHistory(fileManager);
         viewHistory(fileManagerTwo);
     }

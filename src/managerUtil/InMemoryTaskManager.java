@@ -1,19 +1,69 @@
 package managerUtil;
 
+import enums.TypeTask;
 import templateTask.Epic;
 import templateTask.Subtask;
 import templateTask.Task;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 
 
 public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Task> dataTask = new HashMap<>();
     private HashMap<Integer, Epic> dataEpic = new HashMap<>();
+    private List<Task> taskList;
     protected static HistoryManager getDefaultHistory(){
         return new InMemoryHistoryManager();
+    }
+
+    public void setStartTimeForTack(Task task, LocalDateTime startTime, long duration){
+        if(!CheckIntersectionsTime(startTime)){
+            task.setStartTime(startTime);
+            task.setDuration(duration);
+        }
+        else{
+            System.out.println("Из-за пересечения, время начала для задачи не установлено");
+        }
+    }
+
+    public List<Task> getPrioritizedTasks(){
+        taskList = new ArrayList<>();
+        Comparator<Task> comparator = Comparator.comparing(Task::getStartTime);
+        for (Map.Entry<Integer, Task> entry : dataTask.entrySet()) {
+            if(!entry.getValue().getTypeTask().equals(TypeTask.EPIC.getCode())){
+                if(entry.getValue().getStartTime() != null){
+                    taskList.add(entry.getValue());
+                }
+            }
+        }
+        taskList.sort(comparator);
+        for (Map.Entry<Integer, Task> entry : dataTask.entrySet()) {
+            if(!entry.getValue().getTypeTask().equals(TypeTask.EPIC.getCode())){
+                if(entry.getValue().getStartTime() == null){
+                    taskList.add(entry.getValue());
+                }
+            }
+        }
+        return taskList;
+    }
+
+    private boolean CheckIntersectionsTime(LocalDateTime startTime){
+        boolean flag = false;
+        if(startTime != null){
+            List<Task> taskList = getPrioritizedTasks();
+            for (Task tl : taskList){
+                if(!tl.getTypeTask().equals(TypeTask.EPIC.getCode()) && tl.getStartTime() != null){
+                    if(startTime.isAfter(tl.getStartTime()) || startTime.equals(tl.getStartTime())){
+                        if (startTime.isBefore(tl.getEndTime())){
+                            System.out.println(String.format("Пересечение времени выполнения с задачей: %s", tl));
+                            flag = true;
+                        }
+                    }
+                }
+            }
+        }
+        return flag;
     }
 
     @Override
@@ -31,7 +81,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void addTask(Integer idEpic, Subtask subtask){
         addTask(subtask);
         subtask.setIdEpic(idEpic);
-        getDataEpic().get(idEpic).addSubTask(subtask);
+        dataEpic.get(idEpic).addSubTask(subtask);
     }
 
     @Override
@@ -40,32 +90,12 @@ public class InMemoryTaskManager implements TaskManager {
         return getDataTask().get(id);
     }
 
-//    @Override
-//    public Epic getEpic(Integer id){
-//        getDefaultHistory().add(getDataEpic().get(id));
-//        return getDataEpic().get(id);
-//    }
-//
-//    @Override
-//    public Subtask getSubtask(Integer idEpic, Integer idSubtask){
-//        getDefaultHistory().add(getDataEpic().get(idEpic).getSubtask(idSubtask));
-//        return getDataEpic().get(idEpic).getSubtask(idSubtask);
-//    }
-
-    @Override
-    public void updateTask(Task task){
-        dataTask.put(task.getId(), task);
-    }
-
-    @Override
-    public void updateEpic(Epic epic){
-        dataEpic.put(epic.getId(), epic);
-    }
-
     @Override
     public void deleteTask(Integer idTask){
+        if (getDefaultHistory().getHistory().size() > 0){
+            getDefaultHistory().remove(idTask);
+        }
         dataTask.remove(idTask);
-        getDefaultHistory().remove(idTask);
     }
 
     @Override
@@ -74,12 +104,14 @@ public class InMemoryTaskManager implements TaskManager {
             getDefaultHistory().remove(entry.getKey());
         }
         dataTask.clear();
+        dataEpic.clear();
     }
 
     @Override
     public void deleteEpic(Integer idEpic){
         deleteAllSubtask(idEpic);
         dataEpic.remove(idEpic);
+        deleteTask(idEpic);
         getDefaultHistory().remove(idEpic);
     }
 
@@ -87,6 +119,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteAllEpic(){
         for (Map.Entry<Integer, Epic> entry : dataEpic.entrySet()) {
             deleteEpic(entry.getKey());
+            deleteTask(entry.getKey());
             getDefaultHistory().remove(entry.getKey());
         }
         dataEpic.clear();
@@ -94,6 +127,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteSubtask(Integer idEpic, Integer idSubtask){
+        deleteTask(idSubtask);
         dataEpic.get(idEpic).deleteSubtask(idSubtask);
         getDefaultHistory().remove(idSubtask);
     }
@@ -101,6 +135,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteAllSubtask(Integer idEpic){
         for (Map.Entry<Integer, Subtask> entry : dataEpic.get(idEpic).getDataSubtask().entrySet()) {
+            deleteTask(entry.getKey());
             getDefaultHistory().remove(entry.getKey());
         }
         dataEpic.get(idEpic).deleteAllSubtask();

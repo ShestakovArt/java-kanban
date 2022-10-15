@@ -27,7 +27,9 @@ public class InMemoryHistoryManager implements HistoryManager{
 
     @Override
     public void remove(int id){
-        dataHistory.remove(dataMap.get(id));
+        if (dataMap.containsKey(id)){
+            dataHistory.remove(dataMap.get(id));
+        }
     }
 
     static class CustomLinkedList<T>{

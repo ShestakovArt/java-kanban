@@ -17,50 +17,11 @@ public interface TaskManager {
     void addTask(Epic task);
     void addTask(Integer idEpic, Subtask subtask);
 
-//    /**
-//     * Добавить эпик
-//     * @param epic объект Epic
-//     */
-//    void addEpic(Epic epic);
-
-//    /**
-//     * Добавить подзадачу
-//     * @param idEpic id Epic
-//     * @param subtask объект Subtask
-//     */
-//    void addSubTask(Integer idEpic, Subtask subtask);
-
     /**
      * Получение задачи по ID
      * @param id ID задачи
      */
     Task getTask(Integer id);
-
-//    /**
-//     * Получение эпика по ID
-//     * @param id ID эпика
-//     */
-//    Epic getEpic(Integer id);
-//
-//    /**
-//     * Получение подзадачи эпика по ID
-//     * @param idEpic ID эпика
-//     * @param idSubtask ID подзадачи
-//     * @return
-//     */
-//    Subtask getSubtask(Integer idEpic, Integer idSubtask);
-
-    /**
-     * Обновление задачи
-     * @param task обновленный объект Task
-     */
-    void updateTask(Task task);
-
-    /**
-     * Обновление эпика
-     * @param epic обновленный объект Epic
-     */
-    void updateEpic(Epic epic);
 
     /**
      * Метод для удаления конкретной задачи

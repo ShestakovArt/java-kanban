@@ -1,7 +1,8 @@
 package templateTask;
 
-import enums.Status;
 import enums.TypeTask;
+
+import java.time.format.DateTimeFormatter;
 
 public class Subtask extends Task{
     int idEpic;
@@ -52,6 +53,11 @@ public class Subtask extends Task{
 
     @Override
     public String toString() {
-        return String.format("%d,%s,%s,%s,%s,%d", getId(), getTypeTask(),nameTask, getStatus(),description, getIdEpic());
+        String formatStartTime = null;
+        if(getStartTime() != null){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyyHHmmss");
+            formatStartTime = getStartTime().format(formatter);
+        }
+        return String.format("%d,%s,%s,%s,%s,%s,%s,%d", getId(), getTypeTask(),nameTask, getStatus(),description, formatStartTime, getDuration().toString(), getIdEpic());
     }
 }

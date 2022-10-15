@@ -5,18 +5,15 @@ import enums.TypeTask;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Task extends BaseTask{
     private String status;
     private Integer id;
-    private static int counter;
+    private static int counter = 1;
     protected String typeTask = TypeTask.TASK.getCode();
     private Duration duration = Duration.ofMinutes(0);
-    private LocalDateTime startTime = LocalDateTime.now();
-
-    static {
-        counter = 1;
-    }
+    private LocalDateTime startTime;
 
     public Task(String nameTask, String description) {
         super(nameTask, description);
@@ -81,6 +78,10 @@ public class Task extends BaseTask{
         return counter;
     }
 
+    /**
+     * Задаем начальное значение счетчика (необходимо при восстановлении из файла)
+     * @param counter
+     */
     public static void setCounter(int counter) {
         Task.counter = counter;
     }
@@ -94,13 +95,21 @@ public class Task extends BaseTask{
      * @param minutes
      */
     public void setDuration(long minutes) {
-        this.duration = duration.plusMinutes(minutes);
+        this.duration = Duration.ofMinutes(minutes);
     }
 
+    /**
+     * Получить время начала выполнения задачи
+     * @return
+     */
     public LocalDateTime getStartTime() {
         return startTime;
     }
 
+    /**
+     * Установить время начала выполнения задачи
+     * @param startTime
+     */
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
@@ -110,7 +119,12 @@ public class Task extends BaseTask{
      * @return
      */
     public LocalDateTime getEndTime(){
-        return startTime.plusMinutes(duration.toMinutes());
+        if (startTime != null) {
+            return startTime.plusMinutes(duration.toMinutes());
+        }
+        else{
+            return null;
+        }
     }
 
     @Override
@@ -130,6 +144,11 @@ public class Task extends BaseTask{
 
     @Override
     public String toString() {
-        return String.format("%d,%s,%s,%s,%s", getId(), getTypeTask(),nameTask, getStatus(),description);
+        String formatStartTime = null;
+        if(getStartTime() != null){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyyHHmmss");
+            formatStartTime = getStartTime().format(formatter);
+        }
+        return String.format("%d,%s,%s,%s,%s,%s,%s", getId(), getTypeTask(), nameTask, getStatus(), description, formatStartTime, getDuration().toString());
     }
 }
