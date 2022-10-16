@@ -5,9 +5,13 @@ import enums.TypeTask;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import templateTask.Task;
 
 import java.time.LocalDateTime;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static templateTask.Task.setCounter;
@@ -59,18 +63,19 @@ class TaskTest {
                 String.format("Значение статуса задачи '%s' не совпадает c значением '%s'", testTask.getStatus(), Status.NEW.getCode()));
     }
 
-    @Test
-    void setStatusInProgressTest() {
-        testTask.setStatus(Status.IN_PROGRESS.getCode());
-        assertEquals(testTask.getStatus(), Status.IN_PROGRESS.getCode(),
-                String.format("Значение статуса задачи '%s' не совпадает c значением '%s'", testTask.getStatus(), Status.IN_PROGRESS.getCode()));
+    @ParameterizedTest
+    @MethodSource("getStatusParameterized")
+    void setStatusTest(String[] status){
+        testTask.setStatus(status[0]);
+        assertEquals(testTask.getStatus(),status[0],
+                String.format("Значение статуса задачи '%s' не совпадает c значением '%s'", testTask.getStatus(),status[0]));
     }
 
-    @Test
-    void setStatusDoneTest() {
-        testTask.setStatus(Status.DONE.getCode());
-        assertEquals(testTask.getStatus(), Status.DONE.getCode(),
-                String.format("Значение статуса задачи '%s' не совпадает c значением '%s'", testTask.getStatus(), Status.DONE.getCode()));
+    private static Stream<Arguments> getStatusParameterized(){
+        return Stream.of(
+                Arguments.of(new Object[]{new String[]{Status.IN_PROGRESS.getCode()}}),
+                Arguments.of(new Object[]{new String[]{Status.DONE.getCode()}})
+        );
     }
 
     @Test

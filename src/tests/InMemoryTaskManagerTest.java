@@ -1,10 +1,14 @@
 package tests;
 
+import enums.Status;
 import managerUtil.InMemoryHistoryManager;
 import managerUtil.InMemoryTaskManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import templateTask.Epic;
 import templateTask.Subtask;
 import templateTask.Task;
@@ -13,6 +17,7 @@ import tests.utilForTest.TaskManagerTest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static templateTask.Task.setCounter;
@@ -195,6 +200,13 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
                 String.format("Количество элементов списка эпиков '%d' не соответствует расчетному '%d'",
                         taskManagerTest.getDataEpic().get(epicOne.getId()).getDataSubtask().size(), 0));
     }
+
+    /**
+     * TODO методы  getDataTaskTest() и getDataEpicTest() визуально очень похожи, но проверяют разные методы у taskManagerTest
+     *  а именно getDataTask() и getDataEpic(), как и taskManagerTest.addTask(Task task) и taskManagerTest.addTask(Epic epic) принимают разные аргументы
+     *  хорошей практикой в тестировании считается 1 тест - 1 проверка.
+     *  в связи с выше сказанным не считаю за дубляж кода в Тестовых методах getDataTaskTest()/getDataEpicTest()
+     */
 
     @Test
     void getDataTaskTest() {
