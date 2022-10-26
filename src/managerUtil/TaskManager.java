@@ -4,6 +4,7 @@ import templateTask.Epic;
 import templateTask.Subtask;
 import templateTask.Task;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -77,4 +78,18 @@ public interface TaskManager {
      * @return
      */
     List<Task> getHistory();
+
+    /**
+     * Установить время начала задачи
+     * @param task задача
+     * @param startTime время начала
+     * @param duration длительность
+     */
+    void setStartTimeForTack(Task task, LocalDateTime startTime, long duration);
+
+    /**
+     * Просмотр задач по приоритету
+     * @return
+     */
+    List<Task> getPrioritizedTasks();
 }

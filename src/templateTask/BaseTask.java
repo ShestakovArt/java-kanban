@@ -4,10 +4,6 @@ public abstract class BaseTask {
     protected String nameTask;
     protected String description;
 
-    public BaseTask(String nameTask, String description) {
-        this.nameTask = nameTask;
-        this.description = description;
-    }
 
     /**
      * Получить имя задачи
@@ -39,5 +35,13 @@ public abstract class BaseTask {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "BaseTask{" +
+                "nameTask='" + nameTask + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }

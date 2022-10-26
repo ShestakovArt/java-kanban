@@ -1,6 +1,5 @@
 package managerUtil;
 
-import templateTask.BaseTask;
 import templateTask.Task;
 
 import java.util.List;

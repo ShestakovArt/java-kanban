@@ -12,23 +12,36 @@ public class Task extends BaseTask{
     private Integer id;
     private static int counter = 1;
     protected String typeTask = TypeTask.TASK.getCode();
-    private Duration duration = Duration.ofMinutes(0);
+    private Long duration = 0L;
     private LocalDateTime startTime;
 
+    public Task(String nameTask, String description, String status, Integer id, String typeTask, Long duration, LocalDateTime startTime) {
+        this.nameTask = nameTask;
+        this.description = description;
+        this.status = status;
+        this.id = id;
+        this.typeTask = typeTask;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+
     public Task(String nameTask, String description) {
-        super(nameTask, description);
+        this.nameTask = nameTask;
+        this.description = description;
         this.status = Status.NEW.getCode();
         this.id = counter++;
     }
 
-    public Task(int id,String nameTask, String description) {
-        super(nameTask, description);
+    public Task(int id, String nameTask, String description) {
+        this.nameTask = nameTask;
+        this.description = description;
         this.status = Status.NEW.getCode();
         this.id = id;
     }
 
     public Task(int id,String nameTask, String description, String status) {
-        super(nameTask, description);
+        this.nameTask = nameTask;
+        this.description = description;
         Status[] st = Status.values();
         for (Status s : st) {
             if(s.getCode().equals(status)){
@@ -87,7 +100,7 @@ public class Task extends BaseTask{
     }
 
     public Duration getDuration() {
-        return duration;
+        return Duration.ofMinutes(duration);
     }
 
     /**
@@ -95,7 +108,7 @@ public class Task extends BaseTask{
      * @param minutes
      */
     public void setDuration(long minutes) {
-        this.duration = Duration.ofMinutes(minutes);
+        this.duration = minutes;
     }
 
     /**
@@ -120,7 +133,7 @@ public class Task extends BaseTask{
      */
     public LocalDateTime getEndTime(){
         if (startTime != null) {
-            return startTime.plusMinutes(duration.toMinutes());
+            return startTime.plusMinutes(duration);
         }
         else{
             return null;

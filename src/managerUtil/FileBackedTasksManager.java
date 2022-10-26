@@ -29,12 +29,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
      * @throws IOException
      */
     public FileBackedTasksManager(Path path) {
-        this.filePath = path;
-        if (!Files.exists(filePath)) {  //Если нет файла, то создаем новый
-            createFile();
-        }
-        else{
-            loadFromFile();  //Загружаем данные из имеющегося файла
+        if (path != null){
+            this.filePath = path;
+            if (!Files.exists(filePath)) {  //Если нет файла, то создаем новый
+                createFile();
+            }
+            else{
+                loadFromFile();  //Загружаем данные из имеющегося файла
+            }
         }
     }
 
@@ -163,12 +165,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
 
     public void addTask(Integer epicID, Subtask subtask){
         super.addTask(epicID, subtask);
-        save();
     }
 
     public void addTask(Epic epic){
         super.addTask(epic);
-        save();
     }
 
     @Override
