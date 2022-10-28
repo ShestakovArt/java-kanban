@@ -60,16 +60,12 @@ public class HttpTaskManager extends FileBackedTasksManager{
     @Override
     void load(){
         String dataTask = kvTaskClient.load("task");
-        //String dataTask = "[{\"status\":\"NEW\",\"id\":1,\"typeTask\":\"TASK\",\"duration\":0,\"nameTask\":\"Таска Инсомния 1\",\"description\":\"Описание таски\"},{\"status\":\"NEW\",\"id\":2,\"typeTask\":\"TASK\",\"duration\":0,\"nameTask\":\"Таска Инсомния 2\",\"description\":\"Описание таски\"}]";
         buildTasks(dataTask, false);
         String dataEpic = kvTaskClient.load("epic");
-        //String dataEpic = "[{\"dataSubtask\":{\"5\":{\"idEpic\":3,\"status\":\"NEW\",\"id\":5,\"typeTask\":\"SUBTASK\",\"duration\":0,\"nameTask\":\"Сабка 1 Эпик Инсомния 1\",\"description\":\"Описание Сабки\"}},\"status\":\"NEW\",\"id\":3,\"typeTask\":\"EPIC\",\"duration\":0,\"nameTask\":\"Эпик Инсомния 1\",\"description\":\"Описание эпика\"},{\"dataSubtask\":{},\"status\":\"NEW\",\"id\":4,\"typeTask\":\"EPIC\",\"duration\":0,\"nameTask\":\"Эпик Инсомния 2\",\"description\":\"Описание эпика\"}]";
         buildTasks(dataEpic, false);
         String dataSubtask = kvTaskClient.load("subtask");
-        //String dataSubtask = "[{\"idEpic\":3,\"status\":\"NEW\",\"id\":5,\"typeTask\":\"SUBTASK\",\"duration\":0,\"nameTask\":\"Сабка 1 Эпик Инсомния 1\",\"description\":\"Описание Сабки\"}]";
         buildTasks(dataSubtask, false);
         String dataHistory = kvTaskClient.load("history");
-        //String dataHistory = "[{\"dataSubtask\":{\"5\":{\"idEpic\":3,\"status\":\"NEW\",\"id\":5,\"typeTask\":\"SUBTASK\",\"duration\":0,\"nameTask\":\"Сабка 1 Эпик Инсомния 1\",\"description\":\"Описание Сабки\"}},\"status\":\"NEW\",\"id\":3,\"typeTask\":\"EPIC\",\"duration\":0,\"nameTask\":\"Эпик Инсомния 1\",\"description\":\"Описание эпика\"},{\"status\":\"NEW\",\"id\":1,\"typeTask\":\"TASK\",\"duration\":0,\"nameTask\":\"Таска Инсомния 1\",\"description\":\"Описание таски\"}]\n";
         buildTasks(dataHistory, true);
         if(!dataTask.isEmpty() || !dataEpic.isEmpty() || !dataSubtask.isEmpty()){
             Task.setCounter(Collections.max(getDataTask().keySet()) + 1);

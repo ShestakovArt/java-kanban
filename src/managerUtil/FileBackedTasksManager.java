@@ -209,14 +209,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
         fileManager.getTask(1).setDuration(30);
         fileManager.setStartTimeForTack(fileManager.getTask(6), LocalDateTime.of(2222, 10, 22, 22, 22), 300);
         fileManager.setStartTimeForTack(fileManager.getTask(5), LocalDateTime.of(2222, 10, 22, 22, 22), 30);
-//        fileManager.getTask(6).setStartTime(LocalDateTime.of(2222, 10, 22, 22, 22));
-//        fileManager.getTask(6).setDuration(300);
-//        fileManager.getTask(5).setStartTime(LocalDateTime.of(2222, 10, 22, 22, 22));
-//        fileManager.getTask(5).setDuration(30);
-//        fileManager.getTask(5);
-//        System.out.println(fileManager.getTask(1).getDuration());
-//        System.out.println(fileManager.getTask(1).getStartTime());
-//        System.out.println(fileManager.getTask(1).getEndTime());
         fileManager.addTask(epicTwo.getId(), new Subtask("Подзадача 4 эп 2","Описание п4 эп2"));
         System.out.println(fileManager.getTask(epicTwo.getId()).getEndTime());
         fileManager.getTask(1).setStatus(Status.DONE.getCode());

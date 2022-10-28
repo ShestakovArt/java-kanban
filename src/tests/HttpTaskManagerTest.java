@@ -29,8 +29,8 @@ class HttpTaskManagerTest {
     static String descriptionSubtask;
 
 
-    @BeforeAll
-    static void runKVServer() throws IOException, InterruptedException {
+    @BeforeEach
+    void runKVServer() throws IOException, InterruptedException {
         kvServer = new KVServer();
         kvServer.start();
         server = new HttpTaskServer();
@@ -62,8 +62,8 @@ class HttpTaskManagerTest {
         httpClient.send(build, HttpResponse.BodyHandlers.ofString());
     }
 
-    @AfterAll
-    static void stopKVServer(){
+    @AfterEach
+    void stopKVServer(){
         server.stop();
         kvServer.stop();
     }

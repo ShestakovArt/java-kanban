@@ -23,10 +23,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class HttpTaskServer {
-    private static TaskManager taskManager;
+    /*
+    Переменные final(константы) выделены среди остальных написанием в верхнем регистре
+     */
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     public static final int PORT = 8080;
-    private final HttpServer server;
+    private static TaskManager taskManager;
+    private HttpServer server;
     static Gson gson;
 
 
@@ -88,31 +91,13 @@ public class HttpTaskServer {
                         if(startIndex > -1){
                             id = path.substring(startIndex+1);
                         }
-                        if(path.matches("^\\/tasks\\/task\\/\\?id=\\d*$")
-                                && taskManager.getTask(Integer.parseInt(id)).getTypeTask().equals(TypeTask.TASK.getCode())){
-                            response = gson.toJson(taskManager.getTask(Integer.parseInt(id)));
-                            httpExchange.sendResponseHeaders(200, 0);
-                        }
-                        else if(path.matches("^\\/tasks\\/epic\\/\\?id=\\d*$")
-                                && taskManager.getTask(Integer.parseInt(id)).getTypeTask().equals(TypeTask.EPIC.getCode())){
-                            response = gson.toJson(taskManager.getTask(Integer.parseInt(id)));
-                            httpExchange.sendResponseHeaders(200, 0);
-                        }
-                        else if(path.matches("^\\/tasks\\/subtask\\/\\?id=\\d*$")
-                                && taskManager.getTask(Integer.parseInt(id)).getTypeTask().equals(TypeTask.SUBTASK.getCode())){
-                            response = gson.toJson(taskManager.getTask(Integer.parseInt(id)));
-                            httpExchange.sendResponseHeaders(200, 0);
-                        }
-                        else if(path.matches("^\\/tasks\\/epic\\/subtasks\\/\\?id=\\d*$")
-                                && taskManager.getTask(Integer.parseInt(id)).getTypeTask().equals(TypeTask.EPIC.getCode())){
-                            response = gson.toJson(taskManager.getSubtaskEpic(Integer.parseInt(id)));
-                            httpExchange.sendResponseHeaders(200, 0);
-                        }
-                        else{
-                            response = "Не корректный запрос!";
-                            httpExchange.sendResponseHeaders(404, 0);
-                        }
+                        response = gson.toJson(taskManager.getTask(Integer.parseInt(id)));
+                        httpExchange.sendResponseHeaders(200, 0);
+                    }else{
+                        response = "Не корректный запрос!";
+                        httpExchange.sendResponseHeaders(404, 0);
                     }
+
                     break;
                 case "POST":
                     if(path.matches("^\\/tasks\\/task\\/$")
