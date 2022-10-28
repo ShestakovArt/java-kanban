@@ -1,4 +1,7 @@
+import com.google.gson.*;
 import managerUtil.TaskManager;
+import templateTask.Epic;
+import templateTask.Subtask;
 import templateTask.Task;
 import http.*;
 
@@ -13,6 +16,32 @@ public class Main {
         new KVServer().start();
         HttpTaskServer server = new HttpTaskServer();
         server.start();
+
+//        String url = "http://localhost:8080/";
+//        HttpClient httpClient = HttpClient.newHttpClient();
+//        HttpRequest build = HttpRequest.newBuilder()
+//                .uri(URI.create(url + "tasks/task"))
+//                .POST(HttpRequest.BodyPublishers.ofString("{\"nameTask\": \"Таска Инсомния 1\",\"description\": \"Описание таски\"}"))
+//                .build();
+//        httpClient.send(build, HttpResponse.BodyHandlers.ofString());
+//
+//        build = HttpRequest.newBuilder()
+//                .uri(URI.create(url + "tasks/task/?id=1"))
+//                .GET()
+//                .build();
+//        HttpResponse<String> response = httpClient.send(build, HttpResponse.BodyHandlers.ofString());
+//        System.out.println(response.body());
+
+
+//        Gson gson = new Gson();
+//        String dataTask = "[{\"dataSubtask\": {},\"status\": \"NEW\",\"id\": 4,\"typeTask\": \"EPIC\",\"duration\": 0,\"nameTask\": \"Эпик Инсомния 2\",\"description\": \"Описание эпика\"},{\"dataSubtask\": {\"5\": {\"idEpic\": 3,\"status\": \"NEW\",\"id\": 5,\"typeTask\": \"SUBTASK\",\"duration\": 0,\"nameTask\": \"Сабка 1 Эпик Инсомния 1\",\"description\": \"Описание Сабки\"}},\"status\": \"NEW\",\"id\": 3,\"typeTask\": \"EPIC\",\"duration\": 0,\"nameTask\": \"Эпик Инсомния 1\",\"description\": \"Описание эпика\"}]";
+//        JsonElement jsonElement = JsonParser.parseString(dataTask);
+//        JsonArray jsonArray = jsonElement.getAsJsonArray();
+//        for (JsonElement element : jsonArray){
+//            Epic task = gson.fromJson(element, Epic.class);
+//            System.out.println(task);
+//        }
+//        System.out.println("END");
 
 
 

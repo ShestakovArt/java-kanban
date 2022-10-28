@@ -3,7 +3,9 @@ package http;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,6 +48,9 @@ public class KVServer {
                 System.out.println("Значение для ключа " + key + " успешно получены!");
                 System.out.println(value);
                 h.sendResponseHeaders(200, 0);
+                try (OutputStream os = h.getResponseBody()) {
+                    os.write(value.getBytes(StandardCharsets.UTF_8));
+                }
                 return value;
             } else {
                 System.out.println("/load ждёт GET-запрос, а получил: " + h.getRequestMethod());
@@ -109,6 +114,11 @@ public class KVServer {
         System.out.println("Открой в браузере http://localhost:" + PORT + "/");
         System.out.println("API_TOKEN: " + apiToken);
         server.start();
+    }
+
+    public void stop() {
+        System.out.println("Останавливаем сервер http://localhost:" + PORT + "/");
+        server.stop(1);
     }
 
     private String generateApiToken() {

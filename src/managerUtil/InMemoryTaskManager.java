@@ -19,12 +19,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void setStartTimeForTack(Task task, LocalDateTime startTime, long duration){
-        if(!CheckIntersectionsTime(startTime)){
-            task.setStartTime(startTime);
-            task.setDuration(duration);
+        if(!task.getTypeTask().equals(TypeTask.EPIC.getCode())){
+            if(!CheckIntersectionsTime(startTime)){
+                task.setStartTime(startTime);
+                task.setDuration(duration);
+            }
+            else{
+                System.out.println("Из-за пересечения, время начала для задачи не установлено");
+            }
         }
-        else{
-            System.out.println("Из-за пересечения, время начала для задачи не установлено");
+        else {
+            System.out.println("Нельзя устанавливать для Эпиков дату начала");
         }
     }
 

@@ -1,8 +1,6 @@
 package http;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -25,11 +23,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class HttpTaskServer {
-    private static TaskManager taskManager = new Managers().getDefault();
+    private static TaskManager taskManager;
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     public static final int PORT = 8080;
     private final HttpServer server;
-    private static Gson gson = new Gson();
+    static Gson gson;
+
 
     public HttpTaskServer() throws IOException {
         server = HttpServer.create(new InetSocketAddress(PORT), 0);
@@ -37,18 +36,17 @@ public class HttpTaskServer {
     }
 
     public void start() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gson = gsonBuilder.create();
         System.out.println("Запускаем сервер на порту " + PORT);
         System.out.println("Открой в браузере http://localhost:" + PORT + "/");
         server.start();
+        taskManager = new Managers().getDefault();
     }
 
     public void stop() {
         System.out.println("Останавливаем сервер http://localhost:" + PORT + "/");
-        server.stop(0);
-    }
-
-    public void loadFromKVServer(){
-
+        server.stop(1);
     }
 
     static class TaskHandler implements HttpHandler {
@@ -121,7 +119,9 @@ public class HttpTaskServer {
                             || path.matches("^\\/tasks\\/task$")
                             || path.matches("^\\/tasks\\/epic\\/$")
                             || path.matches("^\\/tasks\\/epic$")
-                            || path.matches("^\\/tasks\\/epic\\/subtask\\/\\?id=\\d*$")){
+                            || path.matches("^\\/tasks\\/epic\\/subtask\\/\\?id=\\d*$")
+                            || path.matches("^\\/tasks\\/task\\/setStartTime\\/\\?id=\\d*$")
+                            || path.matches("^\\/tasks\\/subtask\\/setStartTime\\/\\?id=\\d*$")){
                         int startIndex = path.indexOf("=");
                         String id = null;
                         if(startIndex > -1){
@@ -144,6 +144,13 @@ public class HttpTaskServer {
                                     taskJsonElement.getAsJsonObject().get("description").getAsString()));
                             httpExchange.sendResponseHeaders(201, 0);
                         }
+                        else if(path.matches("^\\/tasks\\/task\\/setStartTime\\/\\?id=\\d*$")
+                                || path.matches("^\\/tasks\\/subtask\\/setStartTime\\/\\?id=\\d*$")){
+                            taskManager.setStartTimeForTack(taskManager.getTask(Integer.parseInt(id)),
+                                    LocalDateTime.parse(taskJsonElement.getAsJsonObject().get("startTime").getAsString()),//формат даты 2007-12-03T10:15:30.
+                                    taskJsonElement.getAsJsonObject().get("duration").getAsLong());
+                            httpExchange.sendResponseHeaders(201, 0);
+                        }
                         else{
                             response = "Не корректный запрос!";
                             httpExchange.sendResponseHeaders(404, 0);
@@ -163,7 +170,6 @@ public class HttpTaskServer {
                         if (startIndex > -1) {
                             id = path.substring(startIndex + 1);
                         }
-                        JsonElement taskJsonElement = JsonParser.parseString(body);
                         if (path.matches("^\\/tasks\\/task\\/$") || path.matches("^\\/tasks\\/task$")) {
                             taskManager.deleteAllTask();
                             httpExchange.sendResponseHeaders(200, 0);

@@ -35,15 +35,15 @@ public class FileBackedTasksManager extends InMemoryTaskManager{
                 createFile();
             }
             else{
-                loadFromFile();  //Загружаем данные из имеющегося файла
+                load();  //Загружаем данные из имеющегося файла
             }
         }
     }
 
     /**
-     * Метод для загрузки информации из имеющегося файла
+     * Метод для загрузки информации
      */
-    void loadFromFile(){
+    void load(){
         try{
             dataFile = Files.readString(filePath);
             String[] lineDataFile = dataFile.split("\\n");

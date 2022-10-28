@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 public class Managers {
     public TaskManager getDefault(){
-        return new HttpTaskManager("http://localhost:8078/");
+        return new HttpTaskManager();
     }
 
     public TaskManager getFileBackedTasksManager(Path pathToFile){

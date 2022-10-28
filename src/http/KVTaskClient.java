@@ -7,10 +7,9 @@ import java.net.http.HttpResponse;
 
 public class KVTaskClient {
     private String apiToken;
-    private String url;
+    private String url = "http://localhost:8078/";
 
-    public KVTaskClient(String url) {
-        this.url = url;
+    public KVTaskClient() {
         apiToken = register(url);
 
     }
